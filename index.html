@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <title>바벨모 — 좋아하는 것을 발견하는 곳</title>
+  <link rel="canonical" href="https://bavelmo.com/">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/favicon.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180">
+  <meta name="description" content="좋아하는 작품과 캐릭터의 상품을 탐색하고 매장을 발견하세요. 바벨모 데모의 상품·매장 연결과 재고는 가상 예시입니다.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="바벨모">
+  <meta property="og:locale" content="ko_KR">
+  <meta property="og:title" content="바벨모 — 좋아하는 것을 발견하는 곳">
+  <meta property="og:description" content="좋아하는 작품과 캐릭터의 상품을 탐색하고 매장을 발견하세요. 바벨모 데모의 상품·매장 연결과 재고는 가상 예시입니다.">
+  <meta property="og:url" content="https://bavelmo.com/">
+  <meta property="og:image" content="https://bavelmo.com/og.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="보라색 바벨모 아이콘과 고객의 관심을 매장 입고의 힌트로 문구">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="바벨모 — 좋아하는 것을 발견하는 곳">
+  <meta name="twitter:description" content="좋아하는 작품과 캐릭터의 상품을 탐색하고 매장을 발견하세요. 바벨모 데모의 상품·매장 연결과 재고는 가상 예시입니다.">
+  <meta name="twitter:image" content="https://bavelmo.com/og.png">
+  <meta name="twitter:image:alt" content="보라색 바벨모 아이콘과 고객의 관심을 매장 입고의 힌트로 문구">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="design-rules.css">
+  <script src="analytics.js" defer></script>
+  <script src="views.js" defer></script>
+  <script src="map.js" defer></script>
+  <script src="products.js" defer></script>
+  <script src="areas.js" defer></script>
+  <script src="course.js" defer></script>
+  <script src="stores.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body data-theme="fandom">
+  <a class="skip" href="#main">본문으로 이동</a>
+  <header class="header">
+    <h1><a class="brand" href="./" aria-label="바벨모 홈">바벨모</a></h1>
+    <label class="search"><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></span><input type="search" id="search" placeholder="작품, 캐릭터, 상품 검색" aria-label="작품, 캐릭터, 상품 검색"></label>
+    <button class="header-select search-button" id="open-search" aria-label="상품 검색"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg><span id="search-label">검색</span></button>
+    <select class="header-select" id="work-select" aria-label="작품 선택"></select>
+    <select class="header-select" data-map-area aria-label="지역으로 지도 이동" disabled><option value="">지역 선택</option></select>
+    <div class="header-actions">
+      <button class="course-button" id="open-course"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="5" cy="5" r="2"/><circle cx="19" cy="19" r="2"/><path d="M7 5h9a4 4 0 0 1 0 8H8a3 3 0 0 0 0 6h9"/></svg><span class="course-label">동선</span><span id="course-count">0</span></button>
+      <button class="interest-button" id="open-interest"><svg class="ui-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M20.5 5.5a5 5 0 0 0-7 0L12 7l-1.5-1.5a5 5 0 0 0-7 7L12 21l8.5-8.5a5 5 0 0 0 0-7Z"/></svg> 관심 알림 <span id="interest-count">0</span></button>
+    </div>
+  </header>
+  <main id="main" tabindex="-1"></main>
+  <dialog id="search-dialog" aria-labelledby="search-title"></dialog>
+  <dialog id="detail-dialog" aria-labelledby="detail-title"></dialog>
+  <dialog id="interest-dialog" aria-labelledby="interest-title"></dialog>
+  <dialog id="course-dialog" aria-labelledby="course-title"></dialog>
+  <dialog id="action-dialog" aria-labelledby="action-title" tabindex="-1"></dialog>
+  <div role="status" class="toast" id="toast"></div>
+</body>
+</html>

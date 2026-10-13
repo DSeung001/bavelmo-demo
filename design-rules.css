@@ -1,0 +1,172 @@
+/* Babelmo fandom board: layout and component rules from docs/agents/demo-ui.md. */
+/* Viewport shell: one header row and a map stage that fills the rest, so the page never scrolls. */
+body {display:flex;flex-direction:column;height:100dvh;overflow:hidden}
+.header {display:flex;align-items:center;gap:8px 24px;flex:0 0 auto;padding:8px 24px;border-bottom:var(--stroke)}
+.header-actions {display:contents}
+.header h1 {margin:0;font-size:inherit;line-height:1}
+.brand {font-family:"Cafe24 Ssurround","Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif;font-size:var(--text-display);font-weight:700;font-synthesis:none;line-height:1.3;letter-spacing:-.06em;gap:8px;white-space:nowrap}
+.brand::after {content:'';display:block;flex:0 0 1em;width:1em;height:1em;background:url('/favicon.svg') center/contain no-repeat;pointer-events:none}
+.search {display:flex;align-items:center;gap:8px;flex:1;min-width:0;max-width:480px;padding:0 8px;border:var(--stroke);border-radius:var(--radius-control)}
+/* Work and area selects next to the search; the arrow is our own chevron (ink, 16px), 12px in from the edge and 8px from the text. */
+.header-select {-webkit-appearance:none;appearance:none;min-height:48px;min-width:0;padding:8px 36px 8px 12px;font:inherit;font-weight:700;color:inherit;text-overflow:ellipsis;background:var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2330223F' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center/16px;border:var(--stroke);border-radius:var(--radius-control);cursor:pointer}
+.header-select:disabled {cursor:not-allowed;opacity:.55}
+/* Where the search field does not fit, this button stands in for it and opens the search popup. */
+.search-button {display:none;align-items:center;gap:8px;padding:8px;background-image:none;text-align:left}
+.search-button span {min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.search-button svg {color:var(--purple)}
+#search-dialog {max-width:480px}
+.search-field {max-width:none;margin:16px 0}
+.search>span {display:inline-flex;align-items:center;color:var(--purple)}
+.interest-button {display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-left:auto;background:var(--yellow);font-weight:700;padding:8px 16px;box-shadow:var(--shadow);white-space:nowrap}
+.interest-button span {display:inline-grid;place-items:center;min-width:24px}
+/* Visit course button: same shape as the interest button on a white face, just before it. */
+.course-button {display:inline-flex;align-items:center;justify-content:center;gap:8px;margin-left:auto;font-weight:700;padding:8px 16px;box-shadow:var(--shadow);white-space:nowrap}
+.course-button+.interest-button {margin-left:0}
+#course-count {display:inline-grid;place-items:center;min-width:24px}
+main {flex:1;min-height:0;display:flex}
+.map-panel {--side:clamp(280px,26vw,340px);flex:1;min-width:0;position:relative;isolation:isolate;overflow:hidden;background:var(--cream)}
+#map-canvas {position:absolute;inset:0}
+.map-status {position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center;padding:96px calc(var(--side) + 48px);overflow:auto;background:var(--cream);z-index:3}
+.map-status p {max-width:400px;margin:0}
+.map-status[data-state=loading] [data-map-retry] {visibility:hidden}
+/* Overlays are #map-canvas siblings above it.
+   Anything sitting directly on the map (panels, controls, owner link, markers) has no shadow. */
+.map-sheet {display:contents}
+.sheet-tabs {display:none}
+.side {position:absolute;top:24px;z-index:4;display:flex;flex-direction:column;width:var(--side);max-height:calc(100% - 72px);border:var(--stroke);border-radius:var(--radius-panel);background:color-mix(in srgb,var(--cream) 92%,transparent);overflow:hidden}
+.side-stores {left:24px}
+/* Shorter than the store panel so the owner link keeps its own corner. */
+.side-products {right:24px;max-height:calc(100% - 120px)}
+.side-head {display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:64px;padding:8px 16px;border-bottom:var(--stroke)}
+.side-head h2 {margin:0;font-size:var(--text-body)}
+/* The product panel's head buttons drop under a long store name instead of squeezing it. */
+.side-products .side-head {flex-wrap:wrap;flex:0 0 auto}
+.side-actions {display:flex;margin-left:auto}
+#result-count {font-size:var(--text-small);font-weight:700}
+.side-list {display:flex;flex-direction:column;gap:16px;min-height:0;padding:16px;overflow-y:auto;overscroll-behavior:contain}
+#store-list,#product-grid {gap:8px}
+.side-list:empty {display:none}
+.map-empty {margin:0;padding:16px;font-size:var(--text-small)}
+.map-controls {position:absolute;left:50%;bottom:24px;transform:translateX(-50%);z-index:4;display:flex;gap:8px}
+.map-controls .secondary {white-space:nowrap;box-shadow:none}
+.owner-fab {position:absolute;right:24px;bottom:24px;z-index:4;gap:8px;min-height:48px;padding:8px 16px;background:var(--yellow);border:var(--stroke);border-radius:var(--radius-control);font-weight:700;white-space:nowrap}
+.map-marker {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--cream);border:var(--stroke);border-radius:var(--radius-card);font-size:var(--text-small);font-weight:700;white-space:nowrap}
+.map-marker strong {background:var(--yellow);color:var(--ink);padding:0 8px;border-radius:var(--radius-control)}
+.map-marker.selected {background:var(--purple);color:var(--cream)}
+/* Count of nearby stores merged at the current zoom; clicking zooms in. */
+.map-cluster {display:flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;background:var(--yellow);border-radius:var(--radius-card);font-size:var(--text-body);font-weight:700;white-space:nowrap}
+/* One store per row: a long name is cut with an ellipsis so the area and product count always stay visible. */
+.store-result {display:flex;align-items:center;flex:0 0 auto;gap:8px;width:100%;padding:8px 16px;text-align:left;border-radius:var(--radius-card);white-space:nowrap}
+.store-result strong {min-width:0;font-size:var(--text-body);overflow:hidden;text-overflow:ellipsis}
+.store-result small {flex:0 0 auto;font-size:var(--text-small)}
+.store-result-count {display:inline-flex;align-items:center;gap:8px;flex:0 0 auto;margin-left:auto;font-weight:700}
+.store-result.selected {background:var(--yellow)}
+.store-result.selected small:after {content:' ♥';color:var(--purple)}
+/* A store row is its card plus the course toggle: a plus, or the store's place in the course once added. */
+.store-row {display:flex;flex:0 0 auto;gap:8px}
+.store-row .store-result {flex:1;min-width:0;width:auto}
+.course-toggle {display:grid;place-items:center;flex:0 0 44px;padding:0;border-radius:var(--radius-card);font-weight:700}
+.course-toggle[aria-pressed=true] {background:var(--purple);color:var(--cream)}
+/* A visit course stop's marker carries its order number in front of the store name. On the selected (purple) marker
+   the number turns white so it still stands out. */
+.marker-name {display:flex;align-items:center;gap:8px}
+.map-marker.selected .course-order {background:var(--cream);color:var(--purple)}
+/* Course popup: one bordered row per stop with its order, name and address, then move and remove buttons. */
+#course-dialog {max-width:560px}
+.course-list {display:flex;flex-direction:column;gap:8px;margin:24px 0;padding:0;list-style:none}
+.course-list li {display:flex;align-items:center;gap:8px;padding:8px;border:var(--stroke);border-radius:var(--radius-card)}
+.course-list li>div {display:flex;flex-direction:column;flex:1;min-width:0}
+.course-list small {font-size:var(--text-small);overflow-wrap:anywhere}
+.course-list button {display:grid;place-items:center;flex:0 0 44px;padding:0}
+.course-order {display:grid;place-items:center;flex:0 0 24px;height:24px;background:var(--purple);color:var(--cream);border-radius:var(--radius-control);font-size:var(--text-small);font-weight:700}
+.course-status {margin:16px 0 0;font-size:var(--text-small);font-weight:700}
+.course-status:empty {display:none}
+#course-link {width:100%;min-height:44px;margin-top:8px;padding:8px;border:var(--stroke);border-radius:var(--radius-control)}
+.course-actions {display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:16px}
+/* One product per row: preview, name (ellipsis), status icon when not available, price at the right edge. */
+.product-card {display:flex;align-items:center;flex:0 0 auto;gap:8px;width:100%;padding:8px 16px 8px 8px;text-align:left;border-radius:var(--radius-card);white-space:nowrap;transition:transform .18s}
+.product-card:hover {transform:translate(-2px,-2px)}
+.product-art {flex:0 0 48px;border-radius:var(--radius-control);overflow:hidden}
+.product-art {aspect-ratio:1}
+.product-art img {width:100%;height:100%;object-fit:contain}
+.product-card strong {flex:1;min-width:0;overflow:hidden;white-space:normal;line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}
+/* Owner page: one centered card, same border/radius/shadow as popups. Not on the map, so the shadow stays. */
+/* The card centers with auto margins, not align/justify, so a card taller than the page scrolls from its top. */
+.owner-page {padding:24px;overflow:auto}
+.owner-card {margin:auto;display:flex;flex-direction:column;align-items:center;gap:16px;width:100%;max-width:400px;padding:32px;border:var(--stroke);border-radius:var(--radius-panel);box-shadow:var(--shadow);text-align:center}
+.owner-card h2,.owner-card p {margin:0}
+.owner-card p {word-break:keep-all}
+.owner-card .primary,.owner-card .secondary {border:var(--stroke);border-radius:var(--radius-control)}
+.owner-signup .owner-card {max-width:560px}
+.owner-benefits {width:100%;text-align:left;border:var(--stroke);border-radius:var(--radius-control);padding:16px}
+.owner-benefits ul {margin:0 0 16px;padding-left:24px}
+.owner-benefits li+li {margin-top:8px}
+/* Privacy notice: the owner card widened for reading, left aligned. */
+.policy-card {max-width:640px;align-items:stretch;text-align:left}
+.policy-card h3 {margin:16px 0 0}
+.policy-card p a {display:inline;min-height:0;text-decoration:underline;text-underline-offset:4px}
+.policy-date {font-size:var(--text-small)}
+.policy-card>.text-button {align-self:center}
+/* Footer of the owner and privacy pages. The map page has none. */
+.site-footer {display:flex;justify-content:center;flex:0 0 auto;padding:8px 24px;border-top:var(--stroke)}
+/* Sheet layout: the map fills the stage above two list buttons at the bottom edge. Pressing one opens its list as a
+   sheet and the canvas shrinks above it, instead of two panels covering the map. --sheet is what the sheet takes up. */
+@media(max-width:900px) {
+  .header .search {display:none}
+  .search-button {display:inline-flex;flex:1;max-width:480px}
+  /* One header row has no room for the course button's word: it keeps its icon and count, named by its aria-label.
+     The header's column gap drops to 8px so the search button and the two selects stay as wide as before. */
+  .header {column-gap:8px}
+  .course-label {display:none}
+  #course-count {min-width:0}
+  .course-button {flex:0 0 auto;padding:8px;font-size:var(--text-small)}
+  .map-panel {--sheet:50px}
+  .map-panel[data-open=true] {--sheet:44%}
+  #map-canvas,.map-status {inset:0 0 var(--sheet) 0}
+  .map-status {justify-content:flex-start;padding:24px 16px}
+  .map-sheet {position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;flex-direction:column;height:var(--sheet);background:var(--cream);border-top:var(--stroke)}
+  .sheet-tabs {display:flex;flex:0 0 auto;order:2}
+  .sheet-tabs button {flex:1;min-height:48px;border:0;border-radius:0;font-weight:700}
+  .sheet-tabs button+button {border-left:var(--stroke)}
+  .sheet-tabs button[aria-expanded=true] {background:var(--yellow)}
+  .sheet-tabs button:focus-visible {outline-offset:-4px}
+  .side {position:static;flex:1;width:auto;min-height:0;max-height:none;border:0;border-bottom:var(--stroke);border-radius:0;box-shadow:none;background:var(--cream)}
+  .map-panel:not([data-open=true]) .side,.map-sheet[data-tab=products] .side-stores,.map-sheet[data-tab=stores] .side-products,.side-stores .side-head {display:none}
+  .side-head {min-height:48px}
+  .map-controls {left:16px;bottom:calc(var(--sheet) + 16px);transform:none}
+  .owner-fab {right:16px;bottom:calc(var(--sheet) + 16px)}
+}
+@media(max-width:600px) {
+  /* First-row actions stay together at the right; search, work and area keep equal columns below. */
+  .header {display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:8px 16px}
+  .header h1 {grid-column:1}
+  .header-actions {display:flex;grid-area:1/2/2/4;justify-self:end;align-items:center;gap:8px}
+  .header-actions .course-button,.header-actions .interest-button {margin-left:0;min-height:44px;height:44px}
+  .header-actions #course-count,.header-actions #interest-count {min-width:16px;font-variant-numeric:tabular-nums}
+  /* Stop rows put the name on its own line and the three buttons under it. */
+  .course-list li {flex-wrap:wrap}
+  .course-list li>div {flex-basis:calc(100% - 32px)}
+  .course-list li>div+button {margin-left:auto}
+  .brand {font-size:var(--text-title)}
+  .header-select {max-width:none}
+  .interest-button {font-size:var(--text-small);padding:8px}
+  .map-status {font-size:var(--text-small)}
+  .map-controls [data-map-home] span {display:none}
+  .map-controls .secondary,.owner-fab {padding:8px}
+  .side-list {padding:16px 16px 24px}
+  .owner-card {padding:24px 16px}
+  .owner-signup {padding:16px}
+}
+
+/* UI icons are separate from product illustration SVG sizing. */
+svg.ui-icon {display:inline-block;width:20px;height:20px;flex:0 0 20px;vertical-align:middle;pointer-events:none}
+.close {display:grid;place-items:center}
+.text-button .ui-icon {margin-right:8px}
+.empty>span .ui-icon {width:36px;height:36px}
+
+/* All icon markers are round; nearby individual shops retain the nameplate style. */
+.map-cluster {padding:8px;border-radius:50%}
+
+.store-tag-filter {display:flex;flex-direction:column;gap:8px;padding:8px 16px;font-size:var(--text-small);font-weight:700}
+.store-tag-filter select {width:100%;min-width:0}
+.store-tag-note {padding:0 16px 8px;margin:0;font-size:var(--text-small)}

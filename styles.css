@@ -1,0 +1,117 @@
+/* docs/agents/demo-ui.md is the source of truth. Illustration and provider map internals are exempt. */
+@font-face {font-family:"Cafe24 Ssurround";src:url("fonts/Cafe24Ssurround-v2.0.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap}
+@font-face {font-family:"Pretendard";src:url("fonts/Pretendard-Regular.woff2") format("woff2");font-style:normal;font-weight:400;font-display:swap}
+@font-face {font-family:"Pretendard";src:url("fonts/Pretendard-Bold.woff2") format("woff2");font-style:normal;font-weight:700;font-display:swap}
+@font-face {font-family:"Pretendard";src:url("fonts/Pretendard-Black.woff2") format("woff2");font-style:normal;font-weight:900;font-display:swap}
+:root {
+  --cream:#FFFFFF; --ink:#30223F; --purple:#6733D9; --yellow:#F8D978;
+  --text-small:12px; --text-body:16px; --text-title:24px; --text-display:36px;
+  --space-1:8px; --space-2:16px; --space-3:24px; --space-4:32px; --space-6:48px;
+  --radius-control:8px; --radius-card:16px; --radius-panel:24px;
+  --stroke:2px solid var(--ink); --shadow:4px 4px 0 var(--ink);
+}
+* {box-sizing:border-box}
+html {scroll-behavior:smooth;scroll-padding-top:24px}
+body {margin:0;background:var(--cream);color:var(--ink);font:400 var(--text-body)/1.5 "Pretendard","Noto Sans KR","Malgun Gothic",system-ui,sans-serif}
+button,input {font:inherit;color:inherit}
+button,a,input { -webkit-tap-highlight-color:transparent }
+button,a {touch-action:manipulation}
+button {cursor:pointer;border:var(--stroke);min-height:44px;min-width:44px;background:var(--cream);border-radius:var(--radius-control)}
+button:disabled {cursor:not-allowed;opacity:.55}
+a {color:inherit;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible {outline:3px solid var(--purple);outline-offset:4px}
+input[type=search] {min-height:44px;min-width:0;width:100%;border:0;background:transparent;padding:8px}
+/* The search field shows no focus box; its own border and the text caret mark it. */
+input[type=search]:focus-visible {outline:none}
+input[type=checkbox] {width:24px;height:24px;flex-shrink:0;accent-color:var(--purple)}
+h1,h2,h3,p {margin:0 0 var(--space-2)}
+h1,h2,h3 {line-height:1.3;overflow-wrap:anywhere}
+h1 {font-size:var(--text-display);font-weight:900}
+h2 {font-size:var(--text-title);font-weight:900}
+h3 {font-size:var(--text-body);font-weight:700}
+p {overflow-wrap:anywhere}
+svg {display:block;width:100%;height:auto}
+img {display:block;max-width:100%}
+[hidden] {display:none!important}
+.skip {position:fixed;top:-200px;left:16px;padding:16px;background:var(--ink);color:var(--cream);z-index:30}
+.skip:focus {top:8px}
+.eyebrow {display:block;font-size:var(--text-small);font-weight:700;color:var(--purple);letter-spacing:.08em}
+.primary,.secondary {display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:8px 16px;min-height:48px;font-weight:700;box-shadow:var(--shadow);white-space:normal}
+.primary {background:var(--purple);color:var(--cream)}
+.secondary {background:var(--cream)}
+.text-button {background:transparent;border:0;text-decoration:underline;text-underline-offset:4px;padding:8px;font-size:var(--text-small)}
+.full {width:100%}
+.empty {grid-column:1/-1;text-align:center;border:var(--stroke);border-style:dashed;padding:32px 16px;border-radius:var(--radius-card)}
+.empty>span {font-size:var(--text-display)}
+.empty h3 {font-size:var(--text-title);margin-top:16px}
+.empty p {font-size:var(--text-body)}
+/* Native dialog top layer stays above the isolated provider map. */
+dialog {border:var(--stroke);border-radius:var(--radius-panel);padding:0;width:calc(100% - 32px);max-width:960px;max-height:calc(100dvh - 32px);overflow:auto;background:var(--cream);color:var(--ink);box-shadow:var(--shadow);z-index:20}
+dialog::backdrop {background:color-mix(in srgb,var(--ink) 65%,transparent)}
+#interest-dialog {max-width:560px}
+#action-dialog {max-width:480px}
+#action-dialog:focus-visible {outline:none}
+/* Text link under a popup's main button (privacy notice in the demo notice). */
+.modal-body>a.text-button {justify-content:center;margin-top:8px}
+.close {position:absolute;top:16px;right:16px;z-index:2;width:44px;height:44px;padding:0;background:var(--yellow);font-size:var(--text-title);box-shadow:var(--shadow)}
+.detail-layout {display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.detail-art {padding:32px;display:flex;align-items:center;justify-content:center;border-right:var(--stroke)}
+.detail-art img {width:100%;max-height:480px;object-fit:contain}
+.detail-copy {min-width:0;padding:32px}
+/* Title, stock status and price share one row; the price sits at the right edge and wraps below when the name is long. */
+.detail-head {display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:16px 0}
+.detail-head h2 {min-width:0;margin:0}
+.detail-price {flex:0 0 auto;margin:0 0 0 auto;font-size:var(--text-title);font-weight:900;background:var(--yellow);border:var(--stroke);border-radius:var(--radius-control);padding:0 8px}
+.detail-copy dl {border-block:var(--stroke);border-style:dashed none;margin:24px 0;padding:16px 0;font-size:var(--text-small)}
+.detail-copy dl>div {display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px;padding:8px 0}
+.detail-copy dd {margin:0;text-align:right;overflow-wrap:anywhere}
+/* Sale status label, shared by the product card and the detail popup. Each status differs by fill or border as well as its words. */
+.stock-label {flex:0 0 auto;padding:2px 8px;font-size:var(--text-small);font-weight:700;line-height:1.3;white-space:nowrap;border:var(--stroke);border-radius:var(--radius-control)}
+.stock-label.preorder {background:var(--yellow)}
+.stock-label.arrived,.stock-label.restock {background:var(--purple);color:var(--cream)}
+.stock-label.sold {background:var(--ink);color:var(--cream)}
+.stock-label.unknown {border-style:dashed}
+.stock-notice,.action-note {border:var(--stroke);border-style:dashed;padding:16px;font-size:var(--text-small)}
+.detail-actions {display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px}
+.detail-actions button {flex:1;min-width:120px}
+.modal-body {padding:32px}
+.modal-body>.eyebrow,.detail-copy>.eyebrow {min-height:48px;padding-right:48px}
+.modal-body h2 {margin-top:16px}
+fieldset {border:0;padding:0;margin:24px 0}
+legend {font-weight:700;margin-bottom:8px}
+.interest-options {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.interest-choice {display:flex;gap:8px;align-items:center;padding:8px;border:var(--stroke);border-radius:var(--radius-control);min-height:48px;cursor:pointer;overflow-wrap:anywhere}
+.interest-choice input {margin:0}
+.interest-choice:has(input:checked) {background:var(--yellow)}
+#interest-dialog .modal-body {padding:16px}
+#interest-dialog .modal-body h2 {margin:8px 0}
+#interest-dialog .interest-intro {margin-bottom:8px}
+#interest-dialog .interest-note {font-size:var(--text-small);margin-bottom:16px}
+#interest-dialog fieldset {margin:16px 0 8px}
+#interest-dialog .subscription-state {display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:16px;padding-top:16px}
+#interest-dialog .subscription-state strong {width:100%}
+#interest-dialog .subscription-state button {margin:0}
+.consent {display:flex;align-items:center;gap:8px;font-size:var(--text-small);min-height:44px;cursor:pointer}
+.consent input {margin:0}
+.form-error {font-size:var(--text-small);font-weight:700;border-left:4px solid var(--purple);padding-left:8px}
+.form-error:empty {display:none}
+.subscription-state {border-top:var(--stroke);padding-top:24px;margin-top:24px}
+.subscription-state p {font-size:var(--text-small);margin-top:8px}
+.subscription-state button {margin:8px 8px 0 0}
+.notification-product {display:flex;gap:16px;align-items:center;border:var(--stroke);padding:16px;margin:24px 0}
+.notification-product img {width:96px;height:96px;object-fit:contain;flex-shrink:0}
+.notification-product div {min-width:0}
+.notification-product span,.notification-product p {font-size:var(--text-small)}
+.notification-product h3 {margin:8px 0}
+.action-note {margin:24px 0}
+.toast {position:fixed;bottom:24px;left:50%;transform:translate(-50%,16px);opacity:0;pointer-events:none;z-index:30;background:var(--ink);color:var(--cream);padding:16px 24px;border-radius:var(--radius-control);max-width:calc(100% - 32px);width:max-content;transition:opacity .18s,transform .18s}
+.toast.visible {opacity:1;transform:translate(-50%,0)}
+@media(max-width:600px) {
+  .detail-layout {grid-template-columns:1fr}
+  .detail-art {border-right:0;border-bottom:var(--stroke);padding:24px}
+  .detail-art img {max-height:240px}
+  .detail-copy {padding:24px}
+  .modal-body {padding:24px}
+  .notification-product {flex-direction:column;align-items:start}
+}
+@media(prefers-reduced-motion:reduce) {html{scroll-behavior:auto}*,*::before,*::after{transition:none!important}}
